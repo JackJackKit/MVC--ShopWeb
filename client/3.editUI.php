@@ -7,7 +7,7 @@
 
 <body>
 
-<p>editUI</p>
+<p>my todo task</p>
 <hr />
 <?php
 require("dbconfig.php");
@@ -18,7 +18,7 @@ if ($id <=0) {
 	exit(0);
 } 
 
-$sql = "select jobName, jobUrgent, jobContent, jobState from todo1 where id=?;"; 
+	$sql = "select jobName, jobUrgent, jobContent from todo where id=?;"; 
 	//SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
 	mysqli_stmt_bind_param($stmt, "i", $id); //綁定參數到變數 $id 上, 型態為 i (integer)
@@ -28,7 +28,7 @@ if ($rs=mysqli_fetch_array($result)) { //將查詢結果取出轉成註標型陣
 
 	//若結果不為空值，代表有找到，將結果帶入html表單中作為預設值
 ?>
-<form id="myEditForm" method="post">
+<form method="post" action="3.update.php">
 <input type='hidden' name='jobID' value="<?php echo $id;?>" />
 工作名稱: <input name="name" type="text"  value="<?php echo $rs['jobName'];?>" /> <br>
 
@@ -39,15 +39,9 @@ if ($rs=mysqli_fetch_array($result)) { //將查詢結果取出轉成註標型陣
 <option value="急死了">急死了</option>
 </select> <br>
 
-進度: <select name="jobState">
-<option selected value="<?php echo $rs['jobState'];?>"><?php echo $rs['jobState'];?></option>
-<option value="完成">完成</option>
-<option value="未完成">未完成</option>
-</select> <br>
-
 工作說明: <textarea name='content'><?php echo $rs['jobContent'];?></textarea><br>
 
-<input type='button' onClick="postEditForm()" value="送出">
+<input type="submit" name="Submit" value="送出" />
 
 </form>
 

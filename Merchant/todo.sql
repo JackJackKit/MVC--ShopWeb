@@ -27,13 +27,11 @@ SET time_zone = "+00:00";
 -- Table structure for table `todo`
 --
 
-CREATE TABLE `todo1` (
+CREATE TABLE `todo` (
   `id` int(11) NOT NULL,
   `jobName` varchar(10) NOT NULL,
   `jobUrgent` varchar(5) NOT NULL,
-  `jobContent` varchar(50) NOT NULL,
-  `jobState` varchar(10) NOT NULL
-
+  `jobContent` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -43,7 +41,7 @@ CREATE TABLE `todo1` (
 --
 -- Indexes for table `todo`
 --
-ALTER TABLE `todo1`
+ALTER TABLE `todo`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -53,7 +51,7 @@ ALTER TABLE `todo1`
 --
 -- AUTO_INCREMENT for table `todo`
 --
-ALTER TABLE `todo1`
+ALTER TABLE `todo`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
