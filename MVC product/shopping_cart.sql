@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-11-21 04:54:57
--- 伺服器版本： 10.4.28-MariaDB
--- PHP 版本： 8.2.4
+-- 產生時間： 2023-11-24 16:24:54
+-- 伺服器版本： 10.4.32-MariaDB
+-- PHP 版本： 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,6 +34,16 @@ CREATE TABLE `shopping_cart` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
+-- 傾印資料表的資料 `shopping_cart`
+--
+
+INSERT INTO `shopping_cart` (`id`, `product_id`, `quantity`) VALUES
+(17, 2, 1),
+(18, 2, 1),
+(19, 3, 1),
+(20, 4, 1);
+
+--
 -- 已傾印資料表的索引
 --
 
@@ -52,7 +62,7 @@ ALTER TABLE `shopping_cart`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- 已傾印資料表的限制式

@@ -1,87 +1,29 @@
 <?php
 require('dbconfig.php');
 
-class Product {
-    private $id;
-    private $name;
-    private $description;
-    private $price;
+function getProductList() {
+	global $db;
+	$sql = "select * from products;";
+	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
+	mysqli_stmt_execute($stmt); //執行SQL
+	$result = mysqli_stmt_get_result($stmt); //取得查詢結果
 
-    public function __construct($id, $name, $description, $price) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->price = $price;
-    }
-
-    public function get_id() {
-        return $this->id;
-    }
-
-    public function get_name() {
-        return $this->name;
-    }
-
-    public function get_description() {
-        return $this->description;
-    }
-
-    public function get_price() {
-        return $this->price;
-    }
+	$rows = array(); //要回傳的陣列
+	while($r = mysqli_fetch_assoc($result)) {
+		$rows[] = $r; //將此筆資料新增到陣列中
+	}
+	return $rows;
 }
 
-class ProductModel {
-    private $db;
+function addToShoppingCart($id) {
+	global $db;
 
-    public function __construct($db) {
-        $this->db = $db;
-    }
-
-    public function get_product_list() {
-        $query = "SELECT * FROM products";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-
-        $products = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $id = $row["id"];
-            $name = $row["name"];
-            $description = $row["description"];
-            $price = $row["price"];
-            $product = new Product($id, $name, $description, $price);
-            $products[] = $product;
-        }
-
-        return $products;
-    }
-
-    public function get_product_by_id($id) {
-        $query = "SELECT * FROM products WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
-            $id = $row["id"];
-            $name = $row["name"];
-            $description = $row["description"];
-            $price = $row["price"];
-            $product = new Product($id, $name, $description, $price);
-            return $product;
-        } else {
-            return null;
-        }
-    }
+	$sql = "INSERT INTO shopping_cart (product_id,quantity) VALUES (?,1);"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
+	mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables, with types "sss":string, string ,string
+	mysqli_stmt_execute($stmt);  //執行SQL
+	return True;
 }
 
-// �إ߸�Ʈw�s�u
-try {
-    $db = new PDO("mysql:host=localhost;dbname=test;charset=utf8", "root", "");
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
 
-$productModel = new ProductModel($db);
+?>
