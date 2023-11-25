@@ -9,15 +9,11 @@
 <form id="myForm" method="post" >
 <!-- <form method="post" action="1.insert.php"> -->
 
-工作名稱: <input name="name" type="text"  /> <br/>
+商品名稱: <input name="commodityname" type="text"  /> <br/>
 
-緊急程度: <select name="urgent">
-<option value="普通" selected>普通</option>
-<option value="急">急</option>
-<option value="急死了">急死了</option>
-</select> <br>
+價格: <input name="price" type="text" /> <br>
 
-工作說明: <textarea name='content'></textarea><br>
+商品說明: <textarea commodityContent='commodityContent'></textarea><br>
 
 <input type='button' onClick="postForm()" value="save">
 
