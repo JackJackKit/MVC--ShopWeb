@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `todo1` (
   `id` int(11) NOT NULL,
-  `jobName` varchar(10) NOT NULL,
-  `jobUrgent` varchar(5) NOT NULL,
-  `jobContent` varchar(50) NOT NULL,
-  `jobState` varchar(10) NOT NULL
+  `CommodityName` varchar(20) NOT NULL,
+  `price` varchar(20) NOT NULL,
+  `CommodityContent` varchar(50) NOT NULL,
+  `CommodityState` varchar(10) NOT NULL
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
