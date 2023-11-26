@@ -1,13 +1,13 @@
-<p>Finish list</p>
+<p>抵達清單</p>
 <p><button onclick="loadURL('0.商品輸入表單.html')">新增商品</button></p>
 <hr />
 <table width="200" border="1">
   <tr>
-    <td>id</td>
-    <td>Commodity</td>
-    <td>price</td>
-    <td>Commodity Content</td>
-    <td>Commodity State</td>
+    <td>ID</td>
+    <td>商品名稱</td>
+    <td>價格</td>
+    <td>商品說明</td>
+    <td>運輸狀況</td>
     <td>-</td>
   </tr>
 <?php

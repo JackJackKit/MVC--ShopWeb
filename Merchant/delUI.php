@@ -18,7 +18,7 @@ if ($id <=0) {
 	exit(0);
 } 
 
-	$sql = "select jobName, jobUrgent, jobContent, jobState from todo1 where id=?;"; 
+	$sql = "select CommodityName, price, CommodityContent, CommodityState from todo1 where id=?;"; 
 	//SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
 	mysqli_stmt_bind_param($stmt, "i", $id); //綁定參數到變數 $id 上, 型態為 i (integer)
@@ -30,22 +30,19 @@ if ($rs=mysqli_fetch_array($result)) { //將查詢結果取出轉成註標型陣
 ?>
 <form id="myDeleteForm" method="post">
 <input type='hidden' name='jobID' value="<?php echo $id;?>" />
-工作名稱: <input name="name" type="text"  value="<?php echo $rs['jobName'];?>" /> <br>
+<form id="myEditForm" method="post">
+<input type='hidden' name='id' value="<?php echo $id;?>" />
+商品名稱: <input name="name" type="text"  value="<?php echo $rs['CommodityName'];?>" /> <br>
 
-緊急程度: <select name="urgent">
-<option selected value="<?php echo $rs['jobUrgent'];?>"><?php echo $rs['jobUrgent'];?></option>
-<option value="普通">普通</option>
-<option value="急">急</option>
-<option value="急死了">急死了</option>
+價格: <input name="price" type="text"  value="<?php echo $rs['CommodityName'];?>" /> <br>
+
+運輸狀況: <select name="CommodityState">
+<option selected value="<?php echo $rs['CommodityState'];?>"><?php echo $rs['CommodityState'];?></option>
+<option value="抵達">抵達</option>
+<option value="未抵達">未抵達</option>
 </select> <br>
 
-進度: <select name="jobState">
-<option selected value="<?php echo $rs['jobState'];?>"><?php echo $rs['jobState'];?></option>
-<option value="完成">完成</option>
-<option value="未完成">未完成</option>
-</select> <br>
-
-工作說明: <textarea name='content'><?php echo $rs['jobContent'];?></textarea><br>
+工作說明: <textarea name='content'><?php echo $rs['CommodityContent'];?></textarea><br>
 
 <input type='button' onClick="postDeleteForm()" value="送出">
 
