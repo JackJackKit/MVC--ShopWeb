@@ -34,7 +34,7 @@ if ($rs=mysqli_fetch_array($result)) { //將查詢結果取出轉成註標型陣
 <input type='hidden' name='id' value="<?php echo $id;?>" />
 商品名稱: <input name="name" type="text"  value="<?php echo $rs['CommodityName'];?>" /> <br>
 
-價格: <input name="price" type="text"  value="<?php echo $rs['CommodityName'];?>" /> <br>
+價格: <input name="price" type="text"  value="<?php echo $rs['price'];?>" /> <br>
 
 運輸狀況: <select name="CommodityState">
 <option selected value="<?php echo $rs['CommodityState'];?>"><?php echo $rs['CommodityState'];?></option>
