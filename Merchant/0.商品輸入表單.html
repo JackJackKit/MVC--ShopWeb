@@ -8,20 +8,16 @@
 <body>
 <form id="myForm" method="post">
     <input type='hidden' name='jobID'/>
-    工作名稱: <input name="name" type="text"> <br>
+    商品名稱: <input name="name" type="text"> <br>
     
-    緊急程度: <select name="urgent">
-    <option value="普通">普通</option>
-    <option value="急">急</option>
-    <option value="急死了">急死了</option>
+    價格: <input name="price" type="text"> <br>
+    
+    貨品狀況: <select name="Commoditytate">
+    <option value="抵達">抵達</option>
+    <option value="未抵達">未抵達</option>
     </select> <br>
     
-    進度: <select name="jobState">
-    <option value="完成">完成</option>
-    <option value="未完成">未完成</option>
-    </select> <br>
-    
-    工作說明: <textarea name='content'></textarea><br>
+    商品說明: <textarea name='content'></textarea><br>
     
 <input type='button' onClick="postForm()" value="送出">
     
