@@ -8,14 +8,19 @@ switch ($act) {
         $shoppingCartItems = getShoppingCartItems();
         echo json_encode($shoppingCartItems);
         return;
-    case "addToShoppingCart":
-        $productId = (int)$_REQUEST['id'];
-        addToShoppingCart($productId);
-        return;
     case "removeFromShoppingCart":
         $cartItemId = (int)$_REQUEST['id'];
         removeFromShoppingCart($cartItemId);
         return;
+    case "listProduct":
+        $Product=getProductList();
+        echo json_encode($Product);
+        return;  
+    case "addToShoppingCart":
+	    $id=(int)$_REQUEST['id']; //$_GET, $_REQUEST
+	    //verify
+	    addToShoppingCart($id);
+	    return;
     default:
 }
 ?>

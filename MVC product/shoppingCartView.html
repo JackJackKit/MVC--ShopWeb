@@ -69,7 +69,7 @@
             methods: {
                 loadList: function () {
                     const that = this;
-                    fetch('productControl.php?act=listProduct')
+                    fetch('shoppingCartControl.php?act=listProduct')
                         .then(function (response) {
                             return response.json();
                         })
@@ -79,7 +79,7 @@
                 },
                 addToShoppingCart: function (id) {
                     const that = this;
-                    let url = "productControl.php?act=addToShoppingCart&id=" + id;
+                    let url = "shoppingCartControl.php?act=addToShoppingCart&id=" + id;
                     fetch(url, {
                         method: 'POST'
                     })
