@@ -44,7 +44,7 @@
                     <td>{{item.name}}</td>
                     <td>{{item.price}}</td>
                     <td>{{item.quantity}}</td>
-                    <td>{{item.total_price}}</td>
+                    <td>{{calculateTotalPrice(item)}}</td>
                     <td><button @click="removeFromShoppingCart(item.id)">移除</button></td>
                 </tr>
             </table>
@@ -114,7 +114,11 @@
                 },
                 setUI: function (page) {
                     this.UI = page;
-                }
+                },
+                calculateTotalPrice: function (item) {
+                    // 計算商品總價
+                    return (item.price * item.quantity).toFixed(2);
+                },
             },
             created() {
                 this.loadList();
@@ -123,3 +127,4 @@
     </script>
 </body>
 </html>
+
