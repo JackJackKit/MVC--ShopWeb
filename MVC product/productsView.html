@@ -1,0 +1,116 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+</head>
+
+<body >
+<hr />
+<div id="main">
+<div id="list" v-if="UI=='main'">
+	<h1>商戶端</h1>
+	<button @click="setAddUI()">增加商品</button>
+	<table border=1>
+		<tr><td>序號</td><td>商品名稱</td><td>商品說明</td><td>價格</td><td>-</td></tr>
+		<tr v-for="Product in dat">
+			<td>{{Product.id}}</td>
+			<td>{{Product.name}}</td>
+			<td>{{Product.description}}</td>
+			<td>{{Product.price}}</td>
+			<td><button @click="delProduct(Product.id)">刪除</button><button @click="setEditUI(Product)">修改</button></td>
+		</tr>
+	</table>
+</div>
+<div v-if="UI=='editForm'">
+	工作名稱: <input type="text"  v-model="newProduct.name"/> <br/>
+
+	工作說明: <textarea v-model="newProduct.description"></textarea><br>
+
+	價格: <input type="text"  v-model="newProduct.price"/> <br/>
+
+
+	<input type='button' @click="addProduct()" value="save">
+</div>
+</div>
+<script>
+const productsApp= Vue.createApp({
+	data() {
+		return {
+			UI: 'main',
+			dat: [],
+			newProduct: {
+				id: -1,
+				name: '',
+				price: '',
+				description: ''
+				
+			}
+		}
+	},
+	methods: {
+		loadList: function () {
+			const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+			fetch('productsControl.php?act=listProduct')
+			.then(function(response) {
+				return response.json();
+			})
+			.then(function(myJson) {
+				//we are inside the callback function, now `this` means the function, not vm6
+				//we will use `that` to access vm6
+
+				that.dat = myJson;
+				//productsApp.dat = myJson;
+			});
+		},
+		delProduct: function (id) {
+			const that=this;
+			let url="productsControl.php?act=delProduct&id="+id;
+			fetch(url,{
+				method: 'POST'
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){
+				console.log(data);
+				that.loadList();
+			})
+		},
+		addProduct: function () {
+			const that=this;
+			let mydat = new FormData();
+			mydat.append( "dat", JSON.stringify(this.newProduct) );
+
+			let url="productsControl.php?act=addProduct";
+			fetch(url,{
+				method: 'POST',
+				body: mydat // 將表單物件放入fetch的body屬性
+			})
+			.then(function(res){return res.text(); }) //取得傳回值，轉為文字
+			.then(function(data){ 
+				console.log(data);
+				that.setUI('main');
+				that.loadList();
+			})
+		},
+		setEditUI: function(Product) {
+			this.newProduct=Product;
+			this.setUI('editForm');
+		},
+		setAddUI: function() {
+			this.newProduct={
+				id: -1,
+				name: '',
+				price: '',
+				description: ''
+				
+			};
+			this.setUI('editForm');
+		},
+		setUI: function(page) {
+			this.UI=page;
+		}
+	},
+	created() {
+		this.loadList();
+	}
+}).mount("#main");
+</script>
+</body></html>
