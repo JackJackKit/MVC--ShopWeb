@@ -1,0 +1,146 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="https://unpkg.com/vue@next"></script>
+</head>
+<body>
+    <hr />
+    <div id="main">
+        <div id="list" v-if="UI=='main'">
+            <h1>購物商城</h1>
+            <button @click="viewShoppingCart">查看購物車</button>
+            <table border=1>
+                <tr>
+                    <td>id</td>
+                    <td>商品名稱</td>
+                    <td>商品說明</td>
+                    <td>商品價格</td>
+
+                    <td>加入購物車</td>
+                </tr>
+                <tr v-for="product in dat">
+                    <td>{{product.id}}</td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.description}}</td>
+                    <td>{{product.price}}</td>
+                    <td>{{calculateTotalPrice(product)}}</td>
+                    <td><button @click="addToShoppingCart(product.id)">加入</button></td>
+                </tr>
+            </table>
+        </div>
+
+        <div id="shoppingCart" v-if="UI=='shoppingCart'">
+            <h1>購物車</h1>
+            <button @click="setUI('main')">返回商品列表</button>
+            <table border=1>
+                <tr>
+                    <td>id</td>
+                    <td>商品名稱</td>
+                    <td>單價</td>
+                    <td>數量</td>
+                    <td>總價</td>
+                    <td>從購物車中移除</td>
+                </tr>
+                <tr v-for="item in shoppingCartItems">
+                    <td>{{item.id}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.price}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>{{calculateTotalPrice(item)}}</td>
+                    <td><button @click="removeFromShoppingCart(item.id)">移除</button></td>
+                </tr>
+            </table>
+
+            <!-- 顯示購物車中所有商品價格總和的段落 -->
+            <p v-if="shoppingCartItems.length > 0">
+                購物車總價: {{ calculateTotalCartPrice() }}
+            </p>
+        </div>
+    </div>
+
+<!-- Vue.js script -->
+
+    <script>
+        const todoApp = Vue.createApp({
+            data() {
+                return {
+                    UI: 'main',
+                    dat: [],
+                    newproduct: {
+                        id: -1,
+                        name: '',
+                        description: '',
+                        price: ''
+                    },
+                    shoppingCartItems: [],
+                    totalCartPrice: null  // 新增 totalCartPrice 屬性
+                }
+            },
+            methods: {
+                loadList: function () {
+                    const that = this;
+                    fetch('shoppingCartControl.php?act=listProduct')
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (myProduct) {
+                            that.dat = myProduct;
+                        });
+                },
+                addToShoppingCart: function (id) {
+                    const that = this;
+                    let url = "shoppingCartControl.php?act=addToShoppingCart&id=" + id;
+                    fetch(url, {
+                        method: 'POST'
+                    })
+                        .then(function (res) { return res.text(); })
+                        .then(function (data) {
+                            console.log(data);
+                            that.loadList();
+                        });
+                },
+                viewShoppingCart: function () {
+                    const that = this;
+                    fetch('shoppingCartControl.php?act=getShoppingCartItems')
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (cartItems) {
+                            that.shoppingCartItems = cartItems;
+                            that.calculateTotalCartPrice();  // 立即計算購物車總價
+                            that.setUI('shoppingCart');
+                        });
+                },
+                removeFromShoppingCart: function (id) {
+                    const that = this;
+                    let url = "shoppingCartControl.php?act=removeFromShoppingCart&id=" + id;
+                    fetch(url, {
+                        method: 'POST'
+                    })
+                        .then(function (res) { return res.text(); })
+                        .then(function (data) {
+                            console.log(data);
+                            that.viewShoppingCart();
+                        });
+                },
+                setUI: function (page) {
+                    this.UI = page;
+                },
+                calculateTotalPrice: function (item) {
+                    return (item.price * item.quantity).toFixed(2);
+                },
+                calculateTotalCartPrice: function () {
+                    // 計算購物車中所有商品總價
+                    this.totalCartPrice = this.shoppingCartItems.reduce((total, item) => {
+                        return total + item.price * item.quantity;
+                    }, 0).toFixed(2);
+                },
+            },
+            created() {
+                this.loadList();
+            }
+        }).mount("#main");
+    </script>
+
+</body>
+</html>
