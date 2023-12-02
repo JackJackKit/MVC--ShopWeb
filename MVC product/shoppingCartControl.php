@@ -13,14 +13,18 @@ switch ($act) {
         removeFromShoppingCart($cartItemId);
         return;
     case "listProduct":
-        $Product=getProductList();
+        $Product = getProductList();
         echo json_encode($Product);
-        return;  
+        return;
     case "addToShoppingCart":
-	    $id=(int)$_REQUEST['id']; //$_GET, $_REQUEST
-	    //verify
-	    addToShoppingCart($id);
-	    return;
+        $id = (int)$_REQUEST['id'];
+        addToShoppingCart($id);
+        return;
+    case "calculateTotalCartPrice":
+        $totalCartPrice = calculateTotalCartPrice();
+        echo json_encode(['totalCartPrice' => $totalCartPrice]);
+        return;
     default:
+        // Handle other cases or do nothing for unknown actions
 }
 ?>

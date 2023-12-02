@@ -62,4 +62,19 @@ function addToShoppingCart($id) {
  mysqli_stmt_execute($stmt);  //執行SQL
  return True;
 }
+
+// 新增的函式：計算購物車中所有商品總價
+function calculateTotalCartPrice() {
+    global $db;
+
+    $sql = "SELECT SUM(products.price * shopping_cart.quantity) as totalCartPrice 
+            FROM shopping_cart 
+            JOIN products ON shopping_cart.product_id = products.id;";
+    $result = mysqli_query($db, $sql);
+
+    $row = mysqli_fetch_assoc($result);
+    $totalCartPrice = $row['totalCartPrice'];
+
+    return $totalCartPrice;
+}
 ?>

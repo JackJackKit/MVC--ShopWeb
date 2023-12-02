@@ -15,7 +15,7 @@
                     <td>商品名稱</td>
                     <td>商品說明</td>
                     <td>商品價格</td>
-                    <td>商品總價</td>
+
                     <td>加入購物車</td>
                 </tr>
                 <tr v-for="product in dat">
@@ -50,8 +50,15 @@
                     <td><button @click="removeFromShoppingCart(item.id)">移除</button></td>
                 </tr>
             </table>
+
+            <!-- 顯示購物車中所有商品價格總和的段落 -->
+            <p v-if="shoppingCartItems.length > 0">
+                購物車總價: {{ calculateTotalCartPrice() }}
+            </p>
         </div>
     </div>
+
+<!-- Vue.js script -->
 
     <script>
         const todoApp = Vue.createApp({
@@ -65,7 +72,8 @@
                         description: '',
                         price: ''
                     },
-                    shoppingCartItems: []
+                    shoppingCartItems: [],
+                    totalCartPrice: null  // 新增 totalCartPrice 屬性
                 }
             },
             methods: {
@@ -99,6 +107,7 @@
                         })
                         .then(function (cartItems) {
                             that.shoppingCartItems = cartItems;
+                            that.calculateTotalCartPrice();  // 立即計算購物車總價
                             that.setUI('shoppingCart');
                         });
                 },
@@ -118,8 +127,13 @@
                     this.UI = page;
                 },
                 calculateTotalPrice: function (item) {
-                    // 計算商品總價
                     return (item.price * item.quantity).toFixed(2);
+                },
+                calculateTotalCartPrice: function () {
+                    // 計算購物車中所有商品總價
+                    this.totalCartPrice = this.shoppingCartItems.reduce((total, item) => {
+                        return total + item.price * item.quantity;
+                    }, 0).toFixed(2);
                 },
             },
             created() {
@@ -127,5 +141,6 @@
             }
         }).mount("#main");
     </script>
+
 </body>
 </html>
