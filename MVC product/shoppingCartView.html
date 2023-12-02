@@ -23,7 +23,6 @@
                     <td>{{product.name}}</td>
                     <td>{{product.description}}</td>
                     <td>{{product.price}}</td>
-                    <td>{{calculateTotalPrice(product)}}</td>
                     <td><button @click="addToShoppingCart(product.id)">加入</button></td>
                 </tr>
             </table>
@@ -135,6 +134,7 @@
                         return total + item.price * item.quantity;
                     }, 0).toFixed(2);
                 },
+                
             },
             created() {
                 this.loadList();
