@@ -24,6 +24,25 @@ switch ($act) {
         $totalCartPrice = calculateTotalCartPrice();
         echo json_encode(['totalCartPrice' => $totalCartPrice]);
         return;
+    case "addToOrder"://20231211
+        $shoppingCartItems = addToOrder();
+        echo json_encode($shoppingCartItems);
+        return;
+    case "getOrderItems"://20231211
+        $shoppingOrderItems = getShoppingOrderItems();
+        echo json_encode($shoppingOrderItems);
+        return;
+    case "updateOrder":
+        $orderItemId = (int)$_REQUEST['id'];
+        $score = $_REQUEST['score'];
+        //$orderScore = $_REQUEST['id'];
+        updateScoreToOrder($orderItemId , $score );
+        return;
+    case "getOrderScoreItems"://訂單評分
+        $shoppingOrderScoreItems = getShoppingOrderScoreItems();
+        echo json_encode($shoppingOrderScoreItems);
+        return;
+		
     default:
         // Handle other cases or do nothing for unknown actions
 }
