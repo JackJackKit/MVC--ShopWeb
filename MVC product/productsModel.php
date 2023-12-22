@@ -37,11 +37,62 @@ function updateProduct($id, $name,$price,$description) {
 
 function delProduct($id) {
 	global $db;
-
 	$sql = "delete from products where id=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
 	$stmt = mysqli_prepare($db, $sql); //prepare sql statement
 	mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables, with types "sss":string, string ,string
 	mysqli_stmt_execute($stmt);  //執行SQL
 	return True;
 }
+function OrderItems() {
+    global $db;
+	$sql = "SELECT distinct id,notestatus,score from shopping_order;";
+    $result = mysqli_query($db, $sql);
+    
+    $rows = array();
+    while($r = mysqli_fetch_assoc($result)) {
+        $rows[] = $r;
+    }
+    return $rows;
+}
+function getShoppingOrderItems() {
+    global $db;
+    $sql = "SELECT distinct id,notestatus,score from shopping_order where notestatus='未處理訂單';";
+    $result = mysqli_query($db, $sql);
+    
+    $rows = array();
+    while($r = mysqli_fetch_assoc($result)) {
+        $rows[] = $r;
+    }
+    return $rows;
+}
+function getConfirmOrderItems() {
+    global $db;
+    $sql = "SELECT distinct id,notestatus,score from shopping_order where notestatus='處理中訂單';";
+    $result = mysqli_query($db, $sql);
+    
+    $rows = array();
+    while($r = mysqli_fetch_assoc($result)) {
+        $rows[] = $r;
+    }
+    return $rows;
+}
+
+function updateOrderStatus($orderId, $newStatus) {
+    global $db;
+    $sql = "UPDATE shopping_order SET notestatus=? WHERE id=?";
+    $stmt = mysqli_prepare($db, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $newStatus, $orderId);
+    mysqli_stmt_execute($stmt);
+    return true;
+}
+
+function updateOrderStatusSended($orderId, $newStatus) {
+    global $db;
+    $sql = "UPDATE shopping_order SET notestatus=? WHERE id=?";
+    $stmt = mysqli_prepare($db, $sql);
+    mysqli_stmt_bind_param($stmt, "si", $newStatus, $orderId);
+    mysqli_stmt_execute($stmt);
+    return true;
+}
+
 ?>

@@ -9,6 +9,9 @@
 <div id="list" v-if="UI=='main'">
 	<h1>商戶端</h1>
 	<button @click="setAddUI()">增加商品</button>
+	<button @click="viewOrder">未確定訂單</button>
+	<button @click="viewconfirmOrder">已確認訂單</button>
+	<button @click="OrderItems">查看所有訂單</button>
 	<table border=1>
 		<tr><td>序號</td><td>商品名稱</td><td>商品說明</td><td>價格</td><td>-</td></tr>
 		<tr v-for="Product in dat">
@@ -17,6 +20,60 @@
 			<td>{{Product.description}}</td>
 			<td>{{Product.price}}</td>
 			<td><button @click="delProduct(Product.id)">刪除</button><button @click="setEditUI(Product)">修改</button></td>
+		</tr>
+	</table>
+</div>
+<div id="shoppingOrder" v-if="UI=='shoppingOrder'">
+	<h1>未確定訂單</h1>
+	<button @click="setUI('main')">返回商品列表</button>
+	<table border=1>
+	<tr>
+		
+		<td>訂單編號</td>
+		<td>狀態</td>
+		<td>評分</td>
+		<td>-</td>
+	</tr>
+		<tr v-for="item in shoppingOrderItems">
+			<td>{{item.id}}</td>
+			<td>{{item.notestatus}}</td>
+			<td>{{item.score}}</td>
+			<td><button @click="confirmOrder(item.id)">確認訂單</button></td>
+		</tr>
+	</table>
+</div>
+<div id="ConfirmshoppingOrder" v-if="UI=='ConfirmshoppingOrder'">
+	<h1>已確定訂單</h1>
+	<button @click="setUI('main')">返回商品列表</button>
+	<table border=1>
+	<tr>
+	
+		<td>訂單編號</td>
+		<td>狀態</td>
+		<td>評分</td>
+		<td>-</td>
+	</tr>
+		<tr v-for="OrderItems in ConfirmOrderItems">
+			<td>{{OrderItems.id}}</td>
+			<td>{{OrderItems.notestatus}}</td>
+			<td>{{OrderItems.score}}</td>
+			<td><button @click="SendedOrder(OrderItems.id)">寄送訂單</button></td>
+		</tr>
+	</table>
+</div>	
+<div id="OrderItems" v-if="UI=='OrderItems'">
+	<h1>所有訂單</h1>
+	<button @click="setUI('main')">返回商品列表</button>
+	<table border=1>
+	<tr>
+		<td>訂單編號</td>
+		<td>狀態</td>
+		<td>評分</td>
+	</tr>
+		<tr v-for="Order in OrderItems">
+			<td>{{Order.id}}</td>
+			<td>{{Order.notestatus}}</td>
+			<td>{{Order.score}}</td>
 		</tr>
 	</table>
 </div>
@@ -73,6 +130,25 @@ const productsApp= Vue.createApp({
 				that.loadList();
 			})
 		},
+		confirmOrder(orderId) {
+    		fetch(`productsControl.php?act=updateOrderStatus&orderId=${orderId}&newStatus=處理中訂單`, {
+        		method: 'POST'
+    		})
+    		.then(response => response.text())
+    		.then(() => {
+        	this.loadOrderList();
+    		});
+		},
+		SendedOrder(orderId) {
+    		fetch(`productsControl.php?act=updateOrderStatusSended&orderId=${orderId}&newStatus=寄送中訂單`, {
+        		method: 'POST'
+    		})
+    		.then(response => response.text())
+    		.then(() => {
+        	this.loadOrderList();
+    		});
+		},
+
 		addProduct: function () {
 			const that=this;
 			let mydat = new FormData();
@@ -90,6 +166,39 @@ const productsApp= Vue.createApp({
 				that.loadList();
 			})
 		},
+		viewOrder: function () {
+                    const that = this;
+                    fetch('productsControl.php?act=getOrderItems')
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (orderItems) {
+                            that.shoppingOrderItems = orderItems;
+                            that.setUI('shoppingOrder');
+                        });
+                },
+		viewconfirmOrder: function () {
+                    const that = this;
+                    fetch('productsControl.php?act=getConfirmOrderItems')
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (ConfirmOrderItems) {
+                            that.ConfirmOrderItems = ConfirmOrderItems;
+                            that.setUI('ConfirmshoppingOrder');
+                        });
+                },
+		OrderItems: function () {
+                    const that = this;
+                    fetch('productsControl.php?act=OrderItems')
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (OrderItems) {
+                            that.OrderItems = OrderItems;
+                            that.setUI('OrderItems');
+                        });
+                },
 		setEditUI: function(Product) {
 			this.newProduct=Product;
 			this.setUI('editForm');
