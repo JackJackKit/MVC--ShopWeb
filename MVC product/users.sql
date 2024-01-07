@@ -39,7 +39,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `type`) VALUES
-(2, '123', '123', 1);
+(2, '123', '123', 3);
 
 --
 -- 已傾印資料表的索引

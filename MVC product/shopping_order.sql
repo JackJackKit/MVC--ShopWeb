@@ -41,7 +41,7 @@ CREATE TABLE `shopping_order` (
 --
 
 INSERT INTO `shopping_order` (`id`, `item`, `product_id`, `quantity`, `notestatus`, `score`) VALUES
-(1, 1, 2, 1, '出貨完成', '五顆星'),
+(1, 1, 2, 1, '已送達', '五顆星'),
 (2, 1, 2, 1, '未處理訂單', '');
 
 --

@@ -16,7 +16,7 @@ function getShoppingCartItems() {
     return $rows;
 }
 // 從購物車中移除商品
-function removeFromShoppingCart($cartItemId) {
+function removeFromShoppingCart($cartItemId) { 
     global $db;
     
     $deleteSql = "DELETE FROM shopping_cart WHERE id = ?";
@@ -133,7 +133,7 @@ function updateScoreToOrder($cartItemId , $score) {
 // 獲取訂單可評分明細表
 function getShoppingOrderScoreItems() {
     global $db;
-    $sql = "SELECT distinct id,notestatus,score from shopping_order where notestatus='出貨完成' and score=''";
+    $sql = "SELECT distinct id,notestatus,score from shopping_order where notestatus='已送達' and score=''";
     $result = mysqli_query($db, $sql);
     
     $rows = array();

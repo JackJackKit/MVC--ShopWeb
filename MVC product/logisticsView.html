@@ -1,0 +1,193 @@
+<html><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script type="text/javascript" src="https://unpkg.com/vue@3"></script>
+    </head>
+    
+    <body >
+    <hr />
+    <div id="main">
+    <div id="list" v-if="UI=='main'">
+        <h1>物流端</h1>
+        <button @click="viewOrder">未確定訂單</button>
+        <button @click="viewconfirmOrder">已確認訂單</button>
+        <button @click="OrderItems">查看所有訂單</button>
+        <table border=1>
+            <tr><td>序號</td><td>商品名稱</td><td>商品說明</td><td>價格</td></tr>
+            <tr v-for="Product in dat">
+                <td>{{Product.id}}</td>
+                <td>{{Product.name}}</td>
+                <td>{{Product.description}}</td>
+                <td>{{Product.price}}</td>
+            </tr>
+        </table>
+    </div>
+    <div id="shoppingOrder" v-if="UI=='shoppingOrder'">
+        <h1>未確定訂單</h1>
+        <button @click="setUI('main')">返回商品列表</button>
+        <table border=1>
+        <tr>
+            
+            <td>訂單編號</td>
+            <td>狀態</td>
+            <td>評分</td>
+            <td>-</td>
+        </tr>
+            <tr v-for="item in shoppingOrderItems">
+                <td>{{item.id}}</td>
+                <td>{{item.notestatus}}</td>
+                <td>{{item.score}}</td>
+                <td><button @click="confirmOrder(item.id)">已寄送訂單</button></td>
+            </tr>
+        </table>
+    </div>
+    <div id="ConfirmshoppingOrder" v-if="UI=='ConfirmshoppingOrder'">
+        <h1>已確定訂單</h1>
+        <button @click="setUI('main')">返回商品列表</button>
+        <table border=1>
+        <tr>
+        
+            <td>訂單編號</td>
+            <td>狀態</td>
+            <td>評分</td>
+            <td>-</td>
+        </tr>
+            <tr v-for="OrderItems in ConfirmOrderItems">
+                <td>{{OrderItems.id}}</td>
+                <td>{{OrderItems.notestatus}}</td>
+                <td>{{OrderItems.score}}</td>
+                <td><button @click="SendedOrder(OrderItems.id)">訂單已送達</button></td>
+            </tr>
+        </table>
+    </div>	
+    <div id="OrderItems" v-if="UI=='OrderItems'">
+        <h1>所有訂單</h1>
+        <button @click="setUI('main')">返回商品列表</button>
+        <table border=1>
+        <tr>
+            <td>訂單編號</td>
+            <td>狀態</td>
+            <td>評分</td>
+        </tr>
+            <tr v-for="Order in OrderItems">
+                <td>{{Order.id}}</td>
+                <td>{{Order.notestatus}}</td>
+                <td>{{Order.score}}</td>
+            </tr>
+        </table>
+    </div>
+    <div v-if="UI=='editForm'">
+        商品名稱: <input type="text"  v-model="newProduct.name"/> <br/>
+    
+        商品說明: <textarea v-model="newProduct.description"></textarea><br>
+    
+        價格: <input type="text"  v-model="newProduct.price"/> <br/>
+    
+    
+        <input type='button' @click="addProduct()" value="save">
+    </div>
+    </div>
+    <script>
+    const productsApp= Vue.createApp({
+        data() {
+            return {
+                UI: 'main',
+                dat: [],
+                newProduct: {
+                    id: -1,
+                    name: '',
+                    description: '',
+                    price: ''
+                    
+                }
+            }
+        },
+        methods: {
+            loadList: function () {
+                const that=this; //this  ==> stands for vm6. let's save `this` to `that`
+                fetch('logisticsControl.php?act=listProduct')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(myJson) {
+                    //we are inside the callback function, now `this` means the function, not vm6
+                    //we will use `that` to access vm6
+    
+                    that.dat = myJson;
+                    //productsApp.dat = myJson;
+                });
+            },
+            confirmOrder(orderId) {
+                fetch(`logisticsControl.php?act=updateOrderStatus&orderId=${orderId}&newStatus=已寄送`, {
+                    method: 'POST'
+                })
+                .then(response => response.text())
+                .then(() => {
+                this.loadOrderList();
+                });
+            },
+            SendedOrder(orderId) {
+                fetch(`logisticsControl.php?act=updateOrderStatusSended&orderId=${orderId}&newStatus=已送達`, {
+                    method: 'POST'
+                })
+                .then(response => response.text())
+                .then(() => {
+                this.loadOrderList();
+                });
+            },
+            viewOrder: function () {
+                        const that = this;
+                        fetch('logisticsControl.php?act=getOrderItems')
+                            .then(function (response) {
+                                return response.json();
+                            })
+                            .then(function (orderItems) {
+                                that.shoppingOrderItems = orderItems;
+                                that.setUI('shoppingOrder');
+                            });
+                    },
+            viewconfirmOrder: function () {
+                        const that = this;
+                        fetch('logisticsControl.php?act=getConfirmOrderItems')
+                            .then(function (response) {
+                                return response.json();
+                            })
+                            .then(function (ConfirmOrderItems) {
+                                that.ConfirmOrderItems = ConfirmOrderItems;
+                                that.setUI('ConfirmshoppingOrder');
+                            });
+                    },
+            OrderItems: function () {
+                        const that = this;
+                        fetch('logisticsControl.php?act=OrderItems')
+                            .then(function (response) {
+                                return response.json();
+                            })
+                            .then(function (OrderItems) {
+                                that.OrderItems = OrderItems;
+                                that.setUI('OrderItems');
+                            });
+                    },
+            setEditUI: function(Product) {
+                this.newProduct=Product;
+                this.setUI('editForm');
+            },
+            setAddUI: function() {
+                this.newProduct={
+                    id: -1,
+                    name: '',
+                    description: '',
+                    price: ''
+                    
+                };
+                this.setUI('editForm');
+            },
+            setUI: function(page) {
+                this.UI=page;
+            }
+        },
+        created() {
+            this.loadList();
+        }
+    }).mount("#main");
+    </script>
+    </body></html>
