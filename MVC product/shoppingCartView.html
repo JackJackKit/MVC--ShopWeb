@@ -200,7 +200,8 @@ return "NO";
                 },
                 addToOrder: function () {
                     const that = this;
-                    fetch('shoppingCartControl.php?act=addToOrder') //新增訂單
+					let url = "shoppingCartControl.php?act=addToOrder&username=" + GetQueryString("id");//新增訂單
+                    fetch(url)
                         .then(function (response) {
                             return response.json();
                         })
@@ -223,7 +224,8 @@ return "NO";
                 },
                 viewOrderScore: function () {
                     const that = this;
-                    fetch('shoppingCartControl.php?act=getOrderScoreItems')
+					let url = "shoppingCartControl.php?act=getOrderScoreItems&username=" + GetQueryString("id");
+                    fetch(url)
                         .then(function (response) {
                             return response.json();
                         })

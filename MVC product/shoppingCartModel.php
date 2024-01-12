@@ -93,31 +93,48 @@ function calculateTotalCartPrice() {
     return $totalCartPrice;
 }
 
-function addToOrder() {
+function addToOrder($username) {
     global $db;
 	
     $sql = "INSERT INTO shopping_order( id,item, product_id, quantity,notestatus,username )
             select (SELECT ifnull(MAX( id ),0) + 1 FROM shopping_order )
 			        ,@s:=@s+1 item
-                    ,product_id,quantity,'未處理訂單'
-                    from shopping_cart, (SELECT @s:= 0) AS s;"; 
+                    ,product_id,quantity,'未處理訂單',?
+                    from shopping_cart, (SELECT @s:= 0) AS s
+					where shopping_cart.username=?;"; 
     $stmt = mysqli_prepare($db, $sql); //prepare sql statement
+    mysqli_stmt_bind_param($stmt, "ss", $username , $username); //bind parameters with variables, with types "sss":string, string ,string
     mysqli_stmt_execute($stmt);  //執行SQL
 
 
-    $sql = "Delete from shopping_cart"; 
+    $sql = "Delete from shopping_cart where username=?"; 
     $stmt = mysqli_prepare($db, $sql); //prepare sql statement
+    mysqli_stmt_bind_param($stmt, "s", $username); //bind parameters with variables, with types "sss":string, string ,string
     mysqli_stmt_execute($stmt);  //執行SQL
 
 	
 	
-    $sql = "SELECT distinct id,notestatus,score from shopping_order;";
-    $result = mysqli_query($db, $sql);
-    
+    $sql = "SELECT distinct id,notestatus,score from shopping_order where username=?;";
+    // 使用預處理語句
+    $stmt = $db->prepare($sql);
+
+    // 綁定參數
+    $stmt->bind_param("s", $username);
+
+    // 執行查詢
+    $stmt->execute();
+
+    // 取得結果集
+    $result = $stmt->get_result();
+
     $rows = array();
-    while($r = mysqli_fetch_assoc($result)) {
+    while ($r = $result->fetch_assoc()) {
         $rows[] = $r;
     }
+
+    // 釋放資源
+    $stmt->close();
+
     return $rows;
 }
 // 獲取訂單表
@@ -164,15 +181,29 @@ function updateScoreToOrder($cartItemId , $score) {
 }
 
 // 獲取訂單可評分明細表
-function getShoppingOrderScoreItems() {
+function getShoppingOrderScoreItems($username) {
     global $db;
-    $sql = "SELECT distinct id,notestatus,score from shopping_order where notestatus='已送達' and score=''";
-    $result = mysqli_query($db, $sql);
-    
+    $sql = "SELECT distinct id,notestatus,score from shopping_order where notestatus='已送達' and score='' and username=?";
+    // 使用預處理語句
+    $stmt = $db->prepare($sql);
+
+    // 綁定參數
+    $stmt->bind_param("s", $username);
+
+    // 執行查詢
+    $stmt->execute();
+
+    // 取得結果集
+    $result = $stmt->get_result();
+
     $rows = array();
-    while($r = mysqli_fetch_assoc($result)) {
+    while ($r = $result->fetch_assoc()) {
         $rows[] = $r;
     }
+
+    // 釋放資源
+    $stmt->close();
+
     return $rows;
 }
 

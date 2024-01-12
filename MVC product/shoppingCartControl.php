@@ -27,7 +27,8 @@ switch ($act) {
         echo json_encode(['totalCartPrice' => $totalCartPrice]);
         return;
     case "addToOrder"://20231211
-        $shoppingCartItems = addToOrder();
+        $username = $_REQUEST['username'];
+        $shoppingCartItems = addToOrder($username);
         echo json_encode($shoppingCartItems);
         return;
     case "getOrderItems"://20240111
@@ -42,7 +43,8 @@ switch ($act) {
         updateScoreToOrder($orderItemId , $score );
         return;
     case "getOrderScoreItems"://訂單評分
-        $shoppingOrderScoreItems = getShoppingOrderScoreItems();
+        $username = $_REQUEST['username'];
+        $shoppingOrderScoreItems = getShoppingOrderScoreItems($username);
         echo json_encode($shoppingOrderScoreItems);
         return;
 		
