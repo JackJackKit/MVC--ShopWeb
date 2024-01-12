@@ -5,7 +5,8 @@ $act = $_REQUEST['act'];
 
 switch ($act) {
     case "getShoppingCartItems":
-        $shoppingCartItems = getShoppingCartItems();
+        $username = $_REQUEST['username'];
+        $shoppingCartItems = getShoppingCartItems($username);
         echo json_encode($shoppingCartItems);
         return;
     case "removeFromShoppingCart":
@@ -18,7 +19,8 @@ switch ($act) {
         return;
     case "addToShoppingCart":
         $id = (int)$_REQUEST['id'];
-        addToShoppingCart($id);
+        $username = $_REQUEST['username'];
+        addToShoppingCart($id,$username);
         return;
     case "calculateTotalCartPrice":
         $totalCartPrice = calculateTotalCartPrice();
@@ -29,7 +31,7 @@ switch ($act) {
         echo json_encode($shoppingCartItems);
         return;
     case "getOrderItems"://20240111
-        $username = (int)$_REQUEST['id'];
+        $username = $_REQUEST['username'];
         $shoppingOrderItems = getShoppingOrderItems($username);
         echo json_encode($shoppingOrderItems);
         return;

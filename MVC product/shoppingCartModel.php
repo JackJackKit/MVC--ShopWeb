@@ -2,17 +2,32 @@
 require('dbconfig.php');
 
 // 獲取購物車內商品列表
-function getShoppingCartItems() {
+function getShoppingCartItems($username) {
     global $db;
     $sql = "SELECT shopping_cart.id, products.name, products.price, shopping_cart.quantity, (products.price * shopping_cart.quantity) as total_price 
             FROM shopping_cart 
-            JOIN products ON shopping_cart.product_id = products.id;";
-    $result = mysqli_query($db, $sql);
-    
+            JOIN products ON shopping_cart.product_id = products.id
+			where shopping_cart.username=?";
+    // 使用預處理語句
+    $stmt = $db->prepare($sql);
+
+    // 綁定參數
+    $stmt->bind_param("s", $username);
+
+    // 執行查詢
+    $stmt->execute();
+
+    // 取得結果集
+    $result = $stmt->get_result();
+
     $rows = array();
-    while($r = mysqli_fetch_assoc($result)) {
+    while ($r = $result->fetch_assoc()) {
         $rows[] = $r;
     }
+
+    // 釋放資源
+    $stmt->close();
+
     return $rows;
 }
 // 從購物車中移除商品
@@ -40,25 +55,25 @@ function getProductList() {
 	return $rows;
 }
 
-function addToShoppingCart($id) {
+function addToShoppingCart($id,$username) {
  global $db;
 
- $sql = "select * from shopping_cart where product_id=?;";
+ $sql = "select * from shopping_cart where product_id=? and username=?;";
  $stmt = mysqli_prepare($db, $sql ); //precompile sql指令，建立statement 物件，以便執行SQL
-    mysqli_stmt_bind_param($stmt, "i", $id); 
+    mysqli_stmt_bind_param($stmt, "is", $id , $username); 
  mysqli_stmt_execute($stmt); //執行SQL
  $result = mysqli_stmt_get_result($stmt); //取得查詢結果
  //如果查詢有資料
  if (mysqli_num_rows($result)>0)
  {
-    $sql = "Update shopping_cart set quantity=quantity+1 where product_id=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+    $sql = "Update shopping_cart set quantity=quantity+1 where product_id=?  and username=?;"; //SQL中的 ? 代表未來要用變數綁定進去的地方
  }
  else
  {
-      $sql = "INSERT INTO shopping_cart (product_id,quantity) VALUES (?,1);"; //SQL中的 ? 代表未來要用變數綁定進去的地方
+      $sql = "INSERT INTO shopping_cart (product_id,quantity,username) VALUES (?,1,?);"; //SQL中的 ? 代表未來要用變數綁定進去的地方
  }
  $stmt = mysqli_prepare($db, $sql); //prepare sql statement
- mysqli_stmt_bind_param($stmt, "i", $id); //bind parameters with variables, with types "sss":string, string ,string
+ mysqli_stmt_bind_param($stmt, "is", $id , $username); //bind parameters with variables, with types "sss":string, string ,string
  mysqli_stmt_execute($stmt);  //執行SQL
  return True;
 }

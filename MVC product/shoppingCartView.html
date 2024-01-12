@@ -163,7 +163,7 @@ return "NO";
                 },
                 addToShoppingCart: function (id) {
                     const that = this;
-                    let url = "shoppingCartControl.php?act=addToShoppingCart&id=" + id;
+                    let url = "shoppingCartControl.php?act=addToShoppingCart&id=" + id+"&username=" + GetQueryString("id");
                     fetch(url, {
                         method: 'POST'
                     })
@@ -175,7 +175,8 @@ return "NO";
                 },
                 viewShoppingCart: function () {
                     const that = this;
-                    fetch('shoppingCartControl.php?act=getShoppingCartItems')
+					let url = "shoppingCartControl.php?act=getShoppingCartItems&username=" + GetQueryString("id");
+                    fetch(url)
                         .then(function (response) {
                             return response.json();
                         })
@@ -210,7 +211,7 @@ return "NO";
                 },
                 viewOrder: function () {
                     const that = this;
-					let url = "shoppingCartControl.php?act=getOrderItems&id=" + GetQueryString("id");
+					let url = "shoppingCartControl.php?act=getOrderItems&username=" + GetQueryString("id");
                     fetch(url)
                         .then(function (response) {
                             return response.json();
