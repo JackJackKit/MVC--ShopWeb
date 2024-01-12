@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-01-03 10:04:11
--- 伺服器版本： 10.4.19-MariaDB
--- PHP 版本： 8.0.7
+-- 產生時間： 2024-01-11 17:32:12
+-- 伺服器版本： 10.4.32-MariaDB
+-- PHP 版本： 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- 資料庫: `test`
+-- 資料庫： `test`
 --
 
 -- --------------------------------------------------------
@@ -29,19 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `shopping_cart` (
   `id` int(11) NOT NULL,
-  `userid` int(11) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- 傾印資料表的資料 `shopping_cart`
---
-
-INSERT INTO `shopping_cart` (`id`, `userid`, `product_id`, `quantity`) VALUES
-(18, 0, 2, 3),
-(19, 0, 3, 6),
-(20, 0, 4, 3);
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- 已傾印資料表的索引
@@ -62,7 +53,7 @@ ALTER TABLE `shopping_cart`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `shopping_cart`
 --
 ALTER TABLE `shopping_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

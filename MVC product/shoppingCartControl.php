@@ -28,11 +28,12 @@ switch ($act) {
         $shoppingCartItems = addToOrder();
         echo json_encode($shoppingCartItems);
         return;
-    case "getOrderItems"://20231211
-        $shoppingOrderItems = getShoppingOrderItems();
+    case "getOrderItems"://20240111
+        $username = (int)$_REQUEST['id'];
+        $shoppingOrderItems = getShoppingOrderItems($username);
         echo json_encode($shoppingOrderItems);
         return;
-    case "updateOrder":
+    case "updateOrder"://20240111
         $orderItemId = (int)$_REQUEST['id'];
         $score = $_REQUEST['score'];
         //$orderScore = $_REQUEST['id'];

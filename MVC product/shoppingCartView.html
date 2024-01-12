@@ -5,10 +5,24 @@
     <script type="text/javascript" src="https://unpkg.com/vue@3"></script>
 </head>
 <body>
-    <hr />
+
+    <hr>
+	
     <div id="main">
         <div id="list" v-if="UI=='main'">
             <h1>購物商城</h1>
+		 <p> Hello! I'm  id= <span id="input"></span></p>
+<script>
+var LocString=String(window.document.location.href);
+function GetQueryString(str){
+var rs=new RegExp("(^|)"+str+"=([^&]*)(&|$)","gi").exec(LocString),tmp;
+if(tmp=rs)return tmp[2];
+return "NO";
+}
+
+      document.getElementById('input').innerHTML = GetQueryString("id") ;
+  </script>
+
             <button @click="viewShoppingCart">查看購物車</button>
             <button @click="viewOrder">查看訂單</button>
             <table border=1>
@@ -110,6 +124,15 @@
 
     <!-- Vue.js script -->
     <script>
+var LocString=String(window.document.location.href);
+function GetQueryString(str){
+var rs=new RegExp("(^|)"+str+"=([^&]*)(&|$)","gi").exec(LocString),tmp;
+if(tmp=rs)return tmp[2];
+return "NO";
+}
+
+      
+	
         const todoApp = Vue.createApp({
             data() {
                 return {
@@ -187,7 +210,8 @@
                 },
                 viewOrder: function () {
                     const that = this;
-                    fetch('shoppingCartControl.php?act=getOrderItems')
+					let url = "shoppingCartControl.php?act=getOrderItems&id=" + GetQueryString("id");
+                    fetch(url)
                         .then(function (response) {
                             return response.json();
                         })

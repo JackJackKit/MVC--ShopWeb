@@ -81,8 +81,9 @@ function calculateTotalCartPrice() {
 function addToOrder() {
     global $db;
 	
-    $sql = "INSERT INTO shopping_order( id,item, product_id, quantity,notestatus )
-            select (SELECT ifnull(MAX( id ),0) + 1 FROM shopping_order ),@s:=@s+1 item
+    $sql = "INSERT INTO shopping_order( id,item, product_id, quantity,notestatus,username )
+            select (SELECT ifnull(MAX( id ),0) + 1 FROM shopping_order )
+			        ,@s:=@s+1 item
                     ,product_id,quantity,'未處理訂單'
                     from shopping_cart, (SELECT @s:= 0) AS s;"; 
     $stmt = mysqli_prepare($db, $sql); //prepare sql statement
@@ -105,17 +106,34 @@ function addToOrder() {
     return $rows;
 }
 // 獲取訂單表
-function getShoppingOrderItems() {
+function getShoppingOrderItems($username) {
     global $db;
-    $sql = "SELECT distinct id,notestatus,score from shopping_order;";
-    $result = mysqli_query($db, $sql);
     
+    $sql = "SELECT distinct id, notestatus, score FROM shopping_order WHERE username = ?";
+    
+    // 使用預處理語句
+    $stmt = $db->prepare($sql);
+
+    // 綁定參數
+    $stmt->bind_param("s", $username);
+
+    // 執行查詢
+    $stmt->execute();
+
+    // 取得結果集
+    $result = $stmt->get_result();
+
     $rows = array();
-    while($r = mysqli_fetch_assoc($result)) {
+    while ($r = $result->fetch_assoc()) {
         $rows[] = $r;
     }
+
+    // 釋放資源
+    $stmt->close();
+
     return $rows;
 }
+
 
 //修改訂單幾顆星
 function updateScoreToOrder($cartItemId , $score) {
